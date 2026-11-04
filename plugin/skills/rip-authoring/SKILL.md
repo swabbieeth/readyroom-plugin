@@ -123,7 +123,12 @@ size.*, text.ref-id, and the plain-words warnings text.code (a prose field
 reads as code; the message names the match and where it belongs), text.id (a
 prose field names a record by id; link it from the typed field named),
 text.call (a message's text repeats its call), summary.missing (a rule or
-sequence has no summary). When you add, rename or remove a record, update every record that
+sequence has no summary), and the one-home warnings text.history (rationale,
+notes, a summary, sees or does carries a date, QA round, dated decision, or
+ticket id), sees.branch (a sees line describes a condition the step's edges do
+not carry), sees.platform (a sees line describes one client on a step with no
+platforms), next.target-label (a target_label repeats its target's title), and
+term.unused (a term's copy_word appears in no copy). When you add, rename or remove a record, update every record that
 references it (journey steps and step journey, parts and part_of, rules a step
 or message applies) so no reference dangles. Leave no new errors.
 
