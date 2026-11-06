@@ -122,8 +122,11 @@ entity.column. Warnings: ops.index, entity.index, sequence.unreachable,
 size.*, text.ref-id, and the plain-words warnings text.code (a prose field
 reads as code; the message names the match and where it belongs), text.id (a
 prose field names a record by id; link it from the typed field named),
-text.call (a message's text repeats its call), summary.missing (a rule or
-sequence has no summary), and the one-home warnings text.history (rationale,
+text.call (a message's text repeats its call), summary.missing (a rule,
+sequence, or the product has no summary), summary.long (a summary over 160
+characters or more than one sentence: keep the sentence saying what the
+record is or does and move the rest to typed fields or notes), name.long and
+outcome.long (the product's name over 40 or outcome over 300 characters), and the one-home warnings text.history (rationale,
 notes, a summary, sees or does carries a date, QA round, dated decision, or
 ticket id), sees.branch (a sees line describes a condition the step's edges do
 not carry), sees.platform (a sees line describes one client on a step with no
