@@ -58,7 +58,11 @@ refused):
   related) and step (journey, title, step_kind screen|action|system|decision|
   outcome|error, surface, presentation, copy {title, body[], actions[],
   hints[]} quoted verbatim, sees, does, next [{to|$return, label, when}],
-  sequences, rules, data). surface (module, name, surface_kind, route, parent).
+  sequences, rules, data). A step's sequences lists every sequence it starts,
+  shows progress or an outcome of, or decides in: the action that sends its
+  first message, each screen, error, or outcome step showing what it produced,
+  and a decision whose choice is one of its messages; only pure navigation
+  lists none. surface (module, name, surface_kind, route, parent).
 - operation (module, name, summary, params, returns, errors [{code, status,
   when, copy}], http, auth, sequence).
 - sequence (module, title, trigger {trigger_kind, text}, operation,
