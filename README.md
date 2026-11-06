@@ -28,5 +28,5 @@ Other coding agents connect through MCP or the `rr` CLI
 connections shows the setup for each. To validate a RIP, use
 [`@readyroom/ready`](https://www.npmjs.com/package/@readyroom/ready).
 
-Version 0.4.4. This repository is generated from Ready Room;
+Version 0.4.5. This repository is generated from Ready Room;
 changes made here are overwritten.
