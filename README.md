@@ -1,32 +1,39 @@
 # Ready Room plugin for Claude Code
 
-Connects Claude Code to a [Ready Room](https://readyroom.dev) project: the Ready
-Room MCP tools (ask product questions, read and take messages, read the Ready
-Intent Package), new messages added to Claude's context automatically (when a
-session starts, and before your next prompt, checked at most once a minute),
-and the authoring guide for `.ready` records.
+Adds [Ready Room](https://readyroom.dev) to Claude Code:
+
+- **The Ready Room connector**, at `https://mcp.readyroom.dev/mcp`. Your agent
+  uses it to send your working copy's product intent to Ready Room, open the
+  room card, check the code against the intent, and ask you questions.
+- **A skill for writing your product intent**: the format of the intent
+  package under `product/` (the Ready Intent Package, or RIP) and how to
+  validate it, send it, and check code against it.
 
 ## Install
 
-1. In your project's room on readyroom.dev, open **Agent connections**, choose
-   **Plugin**, and select **Connect agent**. Set the three variables it shows
-   (`RR_ORIGIN`, `RR_PROJECT`, `RR_CREDENTIAL`) where Claude Code starts,
-   for example in your shell profile.
-2. In Claude Code:
+In Claude Code:
 
-   ```
-   /plugin marketplace add swabbiedotdev/readyroom-plugin
-   /plugin install readyroom@readyroom
-   ```
+```
+/plugin marketplace add swabbieeth/readyroom-plugin
+/plugin install readyroom@readyroom
+```
 
-3. Restart Claude Code once. Pending messages are added when a session starts,
-   and new ones before your next prompt. You can also ask Claude to check
-   Ready Room at any time.
+No credential is stored. The first time a Ready Room tool is used, Ready Room
+opens in your browser: sign in if you aren't already, check that the page names
+the app you expect, and choose **Approve**. If Claude Code lists the server as
+needing sign-in, run `/mcp`, choose **readyroom**, and sign in from there.
 
-Other coding agents connect through MCP or the `rr` CLI
-([`@readyroom/cli`](https://www.npmjs.com/package/@readyroom/cli)); Agent
-connections shows the setup for each. To validate a RIP, use
-[`@readyroom/ready`](https://www.npmjs.com/package/@readyroom/ready).
+Then ask Claude to send your working copy and open the room. See
+[Getting started](https://readyroom.dev/docs/getting-started).
 
-Version 0.4.6. This repository is generated from Ready Room;
+## Claude on the web or the desktop app
+
+You don't need this plugin there. Add a custom connector with the same
+address, `https://mcp.readyroom.dev/mcp`, then sign in and approve.
+
+To check an intent package's format on your computer, run
+`npx @readyroom/ready validate .` from the repository root (see
+[`@readyroom/ready`](https://www.npmjs.com/package/@readyroom/ready)).
+
+Version 1.0.0. This repository is generated from Ready Room;
 changes made here are overwritten.
