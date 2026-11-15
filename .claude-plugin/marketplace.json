@@ -1,6 +1,6 @@
 {
   "name": "readyroom",
-  "description": "Ready Room clients for coding agents.",
+  "description": "The Ready Room plugin for Claude Code.",
   "owner": {
     "name": "Swabbie"
   },
@@ -8,8 +8,8 @@
     {
       "name": "readyroom",
       "source": "./plugin",
-      "description": "Ready Room guidance for coding agents: the RR MCP tools, new RR messages added at session start and before each prompt, and authoring guidance for the Ready Intent Package (RIP).",
-      "version": "0.4.6"
+      "description": "Ready Room in Claude Code: the Ready Room connector, which signs you in through your browser, and a skill for writing your product intent and checking code against it.",
+      "version": "1.0.0"
     }
   ]
 }
