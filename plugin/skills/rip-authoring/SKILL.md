@@ -8,8 +8,8 @@ description: Write, change, or check a product's intent for Ready Room, kept und
 # Product intent with Ready Room
 
 A product's intent lives in its repository under product/ as a Ready Intent
-Package (RIP): typed `.ready` records, one per file, in the format below.
-Ready Room shows the RIP to the person and their team through the Ready Room
+Package: typed `.ready` records, one per file, in the format below.
+Ready Room shows the intent package to the person and their team through the Ready Room
 connector (the `readyroom` MCP server this plugin adds).
 
 Use this skill when the person asks to create, change, or check the product
@@ -22,22 +22,53 @@ the person directs; code, questions, and your own suggestions are evidence.
    records they link, then edit the files under product/.
 2. Validate: from the repository root, run `npx @readyroom/ready validate .`
    and fix what it reports until it shows 0 errors and 0 warnings.
-3. Send: call `send_working_copy` with the project's name, a label for the
-   version (such as the branch or worktree), and the model you are running as;
-   or pass a repository_id from `list_repositories` to send to it again. It
-   returns a command: run it in a shell from the repository root. It uploads
-   product/ and prints what Ready Room received. Send again after every change
-   under product/.
-4. Open the room: call `open_room` with the repository_id to show the person
-   the room card.
-5. Check: call `start_check` with scope `changed` for what this session
-   touched, or `full` when the person asks for a full check. Read the code
-   and the RIP on disk yourself, then finish with `report_check`.
-6. Ask: when the RIP does not settle something the person must decide, ask
+3. Send: call `send_working_copy` with `project`, the project's name (used only when
+   the checkout has no remote), `model`, the model you are running as, and your
+   `environment` and `task`. On your computer, environment is the machine's name
+   and the checkout's path as `machine:/path`, with no task. In a cloud or
+   sandbox, use the environment's id and the task's or session's id. To send
+   a version the checkout is not on, pass an optional `ref` naming a branch or
+   tag. The optional `organization` is its name as `list_repositories` shows it;
+   without it, Ready Room uses the person's active organization. Do not pass
+   a label or repository_id. Run the returned command in a shell from the
+   repository root: it uploads product/ and prints what Ready
+   Room received, including the repository_id the mirror went to. Send again
+   after every change under product/.
+4. Open the room: call `open_room` with the repository_id from the command's
+   output to show the room card.
+5. Check: call `start_check` with that `repository_id`, your `model`, the same
+   `environment` and `task`, and `scope` `changed` for what this session touched,
+   or `full` when the person asks for a full check. Read the code and the product
+   intent on disk yourself, then finish with `report_check`.
+   Call `show_check` once at the start and `check_progress` as you work through the parts.
+   When discussing intent, use `show_intent`, `show_findings`, or `show_change` to show the point as a card.
+6. Ask: when the intent package does not settle something the person must decide, ask
    with `ask_member` (to show an open question, take its question_id from
    `list_questions`). Edit product/ as the answer directs, validate, and send
    again. Close questions with `close_question` only when the person says
    they no longer apply.
+
+## Show a version
+
+<!-- RULE-VERSION-TO-SHOW, SEQ-SHOW-VERSION -->
+
+When asked to show a branch, tag, release, or another version, call
+`list_repositories`. From a checkout, list the remote's branches and tags,
+fetch just the one to be shown, and read its commit and stated release; do not
+assume a cloud checkout has other branches. If the words fit no version or
+several, ask which, naming the versions found. Open a working copy that holds
+exactly the intended current commit on the remote, preferring the person's own
+to another member's. In the fields returned by `list_repositories`, its
+`commit` must equal the wanted commit, `product_state` must be `committed`,
+and `commit_reach` must be `remote`. A copy with uncommitted changes does not qualify.
+If none holds it, send the branch or tag with ref and open the repository_id printed by
+the upload command. This leaves the checkout's files and mirror alone.
+
+Without a checkout, or when the branch or tag cannot be read, open the most
+recently sent copy that holds the version and say when it was sent, from which
+commit, and whether it held uncommitted changes or a commit not on the remote.
+Showing a version starts no check. Check a version sent from a branch only
+from a checkout of that branch, where you can read its code.
 
 If the Ready Room tools are unavailable, the person has not signed in yet: ask
 them to run `/mcp`, choose readyroom, and sign in in the browser. Editing and
@@ -119,6 +150,17 @@ Record fields:
   same trigger, one per outcome; outcome maps to the destination. Pure movement
   needs no sequence. Final steps have no outgoing edges. Never store sequence
   lists on steps or flows: start and end steps are derived from edges.
+  Steps are states and edges are the moves between them. Name a screen as a
+  noun or a place; an outcome is a result, good or bad, that may lead onward;
+  a system step is the app working while the person waits. Use a decision only
+  where the product branches on a rule or a result with no one choosing: name
+  it as a question, give each edge a guard, label or outcome, and never a
+  person-action trigger. A person's choice is a screen with one edge per
+  option. Avoid action steps in journeys: an action is an edge, and time the
+  person spends away is the gap between two steps, crossed by an event trigger
+  such as "Walk ends". Name person triggers as verb phrases in their words and
+  system triggers as events ("Voting closes"); never title a step with its own
+  trigger's name, and give each direction its own trigger ("Go back").
 - sequence: capability, title, participants[], items[], outcomes [{id, label}],
   trigger? (trigger id), parts?[], part_of?. A sequence runs from an edge, an
   invoking message, or its own schedule, event or call trigger. An edge-run
@@ -214,7 +256,13 @@ ref.missing/ref.kind, home.capability, flow.subject/empty, step.flow/kind,
 edge.trigger/sequence/start, sequence.participant, rule.empty/orphan/decision,
 interface.fields, and data/schema errors. Review warnings for shared ownership,
 unreached sequences, unmapped outcomes, unused interfaces/triggers, data states,
-plain words, missing/long summaries and oversized flows/sequences. Maintain all
+plain words, missing/long summaries and oversized flows/sequences, and one home
+per fact: column rules that restate nullable/keys/fk/default/check, summaries
+that repeat the title, notes over 700 characters, records over 12,000
+characters, screen steps with no sees/does/copy, step copy the interface
+already holds, sentences repeated in three or more records, files no
+record names, and states and moves (step.trigger-title, edge.both-ways,
+decision.action, decision.branch, step.action). Maintain all
 references, parts, flow steps, sequence outcomes and rule applications together.
 
 Honor the effective DCL; it describes target intent only. A capability uses its
